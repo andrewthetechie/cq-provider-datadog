@@ -1,10 +1,13 @@
-cq-provider-template
+cq-provider
 config.hcl
 .config.hcl.swp
 .cq_reattach
+.cq
 .DS_store
 crash.log
 .idea
 .vscode
 cloudquery
 cloudquery.log
+# goenv
+.go-version

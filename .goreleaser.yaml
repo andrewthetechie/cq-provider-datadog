@@ -9,7 +9,7 @@ builds:
       - CGO_ENABLED=0
       - GO111MODULE=on
     ldflags:
-      - -s -w -X github.com/cloudquery/cq-provider-template/resources/provider.Version={{.Version}}
+      - -s -w -X github.com/andrewthetechie/cq-provider-datadog/resources/provider.Version={{.Version}}
     goos:
       - windows
       - linux
