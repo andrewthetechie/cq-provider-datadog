@@ -21,7 +21,7 @@ func Provider() *provider.Provider {
 	return &provider.Provider{
 		Version: Version,
 		// CHANGEME: Change to your provider name
-		Name:      "YourProviderName",
+		Name:      "datadog",
 		Configure: client.Configure,
 		ResourceMap: map[string]*schema.Table{
 			// CHANGEME: place here all supported resources
