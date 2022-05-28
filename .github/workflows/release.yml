@@ -1,9 +1,8 @@
 # DONT EDIT. This file is synced from https://github.com/cloudquery/.github/.github
 name: release
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  release:
+    types: [released]
 env:
   CGO_ENABLED: 0
 
