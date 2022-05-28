@@ -29,7 +29,7 @@ func Provider() *sdkprovider.Provider {
 			"permissions":     services.Permissions(),
 			"roles":           services.Roles(),
 			"synthetics":      services.Synthetics(),
-			"users": services.Users(),
+			"users":           services.Users(),
 		},
 		Config: func() sdkprovider.Config {
 			return &client.Config{}
