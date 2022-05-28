@@ -1,4 +1,4 @@
-🎉 Thank you for making CloudQuery awesome by submitting a PR 🎉
+🎉 Thank you for making cq-provider-datadog awesome by submitting a PR 🎉
 
 #### Summary
 
