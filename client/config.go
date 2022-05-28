@@ -2,28 +2,31 @@ package client
 
 // Provider Configuration
 
-type Config struct {
-	// here goes top level configuration for your provider
-	// This object will be pass filled in depending on user's configuration
-	// CHANGEME
-	ExampleConfig string `hcl:"example_config"`
+type Account struct {
+	Name   string `hcl:",label"`
+	APIKey string `hcl:"api_key"`
+	AppKey string `hcl:"app_key"`
+	APIUrl string `hcl:"api_url,optional"`
+}
 
-	// resources that user asked to fetch
-	// each resource can have optional additional configurations
-	Resources []struct {
-		Name  string
-		Other map[string]interface{} `hcl:",inline"`
-	}
+type Config struct {
+	Accounts    []Account `hcl:"accounts,block"`
+	DatdogDebug bool      `hcl:"datadog_debug,optional"`
+	MaxRetries  int       `hcl:"max_retries,optional" default:"10"`
+	MaxBackoff  int       `hcl:"max_backoff,optional" default:"30"`
 }
 
 func (c Config) Example() string {
 	return `configuration {
-	// CHANGEME:
-	//Here you define your default/example documentation.
-	//That is generated with cloudquery init YourProviderName
+		accounts "main" {
+			api_key = "datadog api key"
+			app_key = "datadog app key"
+			// api_url = "datadoghq.eu" use to set a custom datadog api url
+		}
 	// Optional or required parameters
-	// debug = false
-	// api_key = ""	
+	// datadog_debug will turn on debug logging from the datadog client
+	// datadog_debug = false
+	
 }
 `
 }

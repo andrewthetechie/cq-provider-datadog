@@ -1,8 +1,15 @@
 # DONT EDIT. This file is synced from https://github.com/cloudquery/.github/misc/Makefile
 
-## install the latest version of CQ
-.PHONY: install-cq
-install-cq:
+.DEFAULT_GOAL := help
+
+# This help function will automatically generate help/usage text for any make target that is commented with "##".
+# Targets with a singe "#" description do not show up in the help text
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-40s\033[0m %s\n", $$1, $$2}'
+
+
+.PHONY: install-cq 
+install-cq:  ## install the latest version of CQ
 	@if [[ "$(OS)" != "Darwin" && "$(OS)" != "Linux" && "$(OS)" != "Windows" ]]; then echo "\n Invalid OS set. Valid Options are Darwin, Linux and Windows. Example invocation is:\n make OS=Linux ARCH=arm64 install-cq \n For more information go to  https://docs.cloudquery.io/docs/getting-started \n"; exit 1; fi
 	@if [[ "$(ARCH)" != "x86_64" && "$(ARCH)" != "arm64" ]]; then echo "\n Invalid ARCH set. Valid options are x86_64 and arm64. Example invocation is:\n make OS=Linux ARCH=arm64 install-cq \n For more information go to  https://docs.cloudquery.io/docs/getting-started \n"; exit 1; fi
 	curl -L https://github.com/cloudquery/cloudquery/releases/latest/download/cloudquery_${OS}_${ARCH} -o cloudquery
@@ -33,41 +40,27 @@ pg-stop:
 pg-connect:
 	psql -h localhost -p 5432 -U postgres -d postgres
 
-# build the cq aws provider
 .PHONY: build
-build:
+build:  ## build the cq provider
 	go build -o cq-provider
 
-# build and run the cq provider
 .PHONY: run
-run: build
+run: build  ## build and run the cq provider
 	CQ_PROVIDER_DEBUG=1 CQ_REATTACH_PROVIDERS=.cq_reattach ./cq-provider
 
-# Run a fetch command
-.PHONY: fetch
-fetch:
-	CQ_PROVIDER_DEBUG=1 CQ_REATTACH_PROVIDERS=.cq_reattach cloudquery fetch --dsn "postgres://postgres:pass@localhost:5432/postgres?sslmode=disable" -v --fail-on-error
 
-# Generate mocks for mock/unit testing 
+.PHONY: fetch
+fetch:  ## Run a fetch command
+	CQ_PROVIDER_DEBUG=1 CQ_REATTACH_PROVIDERS=.cq_reattach ./cloudquery fetch --dsn "postgres://postgres:pass@localhost:5432/postgres?sslmode=disable" -v --fail-on-error
+
 .PHONY: generate-mocks
-generate-mocks:
+generate-mocks: ## Generate mocks for mock/unit testing 
 	go generate ./client/services/...
 
-# Test unit
 .PHONY: test-unit
-test-unit:
+test-unit: ## Run unit tests
 	go test -timeout 3m ./...
 
-# Run an integration tests
 .PHONY: test-integration
-test-integration:
+test-integration: ## Run integration tests
 	@if [[ "$(tableName)" == "" ]]; then go test -run=TestIntegration -timeout 3m -tags=integration ./...; else go test -run="TestIntegration/$(tableName)" -timeout 3m -tags=integration ./...; fi
-
-# Create a DB migration
-.PHONY: db-migration
-db-migration:
-    # Get latest migration file, trim extention, increment patch and then order
-	$(eval prefixSuggestion:=$(shell ls -1 resources/provider/migrations/postgres/ | tail -1 | awk '{print substr($$0, 1, length($$0)-7)}' | awk -F. -v OFS=. '{$$NF += 1 ; print}' | awk -F_ -v OFS=_ '{$$1 += 1 ; print}'))
-	@if [[ "$(prefix)" == "" ]]; then echo "Invalid prefix, see example 'make db-migration prefix=$(prefixSuggestion)'" && exit 1; fi;
-	go run tools/migrations/main.go -prefix "${prefix}" -dsn 'postgres://postgres:pass@localhost:5432/postgres?sslmode=disable'
-	go run tools/migrations/main.go -prefix "${prefix}" -fake-tsdb -dsn 'postgres://postgres:pass@localhost:5432/postgres?sslmode=disable'

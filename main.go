@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/andrewthetechie/cq-provider-datadog/resources/provider"
 	"github.com/cloudquery/cq-provider-sdk/serve"
-	"github.com/cloudquery/cq-provider-template/resources/provider"
 )
 
 func main() {
