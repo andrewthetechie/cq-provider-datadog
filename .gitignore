@@ -11,3 +11,4 @@ cloudquery
 cloudquery.log
 # goenv
 .go-version
+dist/*
