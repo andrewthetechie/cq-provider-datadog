@@ -18,7 +18,7 @@ jobs:
           input_string: ${{github.ref_name}}
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v3
+        uses: crazy-max/ghaction-import-gpg@v5
         with:
           gpg-private-key: ${{ secrets.PRIVATE_KEY }}
       - name: Checkout
