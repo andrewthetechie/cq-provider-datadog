@@ -38,8 +38,13 @@ cloudquery {
 
 provider "datadog" {
   configuration {
-    // currently only supports a single account, future plans for multi-account support
+
     accounts "main" {
+      api_key = "DATADOG API KEY"
+      app_key = "DATADOG APP KEY"
+    }
+
+    accounts "staging" {
       api_key = "DATADOG API KEY"
       app_key = "DATADOG APP KEY"
     }
@@ -70,5 +75,4 @@ This is a very early provider and has some rough edges. Table layout should be e
 
 Most resources are just cq-gen's best approximation of a good structure for the object and have not been optimized.
 
-Account multiplexing is not currently available. If you add more than one account to the datadog provider, only the first will be fetched.
 
