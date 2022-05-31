@@ -4,6 +4,7 @@ Monitor Object describing a monitor.
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |created|timestamp without time zone|Timestamp of the monitor creation.|
 |creator_email|text|Email of the creator.|
 |creator_handle|text|Handle of the creator.|

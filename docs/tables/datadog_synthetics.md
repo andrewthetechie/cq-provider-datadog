@@ -4,6 +4,7 @@ SyntheticsTestDetails Object containing details about your Synthetic test.
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |config|jsonb|Configuration object for a Synthetic test.|
 |creator_email|text|Email of the creator.|
 |creator_handle|text|Handle of the creator.|
