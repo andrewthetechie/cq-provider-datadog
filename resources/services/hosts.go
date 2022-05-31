@@ -15,9 +15,16 @@ func Hosts() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_hosts",
 		Description: "Host Object representing a host.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchHosts,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "aliases",
 				Description: "Host aliases collected by Datadog.",
@@ -212,10 +219,10 @@ func fetchHosts(ctx context.Context, meta schema.ClientMeta, parent *schema.Reso
 	logger := c.Logger()
 	logger.Debug("in fetchHosts")
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V1Config)
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V1Config)
 	var step int64 = 1000
 	params := datadog.NewListHostsOptionalParameters().WithIncludeMutedHostsData(true).WithIncludeHostsMetadata(true).WithCount(step)
-	resp, r, err := apiClient.HostsApi.ListHosts(c.Accounts[0].V1Context, *params)
+	resp, r, err := apiClient.HostsApi.ListHosts(c.MultiPlexedAccount.V1Context, *params)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)
@@ -227,7 +234,7 @@ func fetchHosts(ctx context.Context, meta schema.ClientMeta, parent *schema.Reso
 	for retrievedCount < totalCount {
 		logger.Debug("Looping host requests")
 		params := datadog.NewListHostsOptionalParameters().WithIncludeMutedHostsData(true).WithIncludeHostsMetadata(true).WithCount(step).WithStart(retrievedCount)
-		resp, r, err := apiClient.HostsApi.ListHosts(c.Accounts[0].V1Context, *params)
+		resp, r, err := apiClient.HostsApi.ListHosts(c.MultiPlexedAccount.V1Context, *params)
 		logger.Debug(r.Status)
 		if err != nil {
 			return diag.FromError(err, diag.ACCESS)

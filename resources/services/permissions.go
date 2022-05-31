@@ -14,9 +14,16 @@ func Permissions() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_permissions",
 		Description: "Role Role object returned by the API.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchPermissions,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "attributes_created_at",
 				Description: "Creation time of the role.",
@@ -83,9 +90,9 @@ func fetchPermissions(ctx context.Context, meta schema.ClientMeta, parent *schem
 	logger := c.Logger()
 	logger.Debug("in fetchHosts")
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V2Config)
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V2Config)
 
-	resp, r, err := apiClient.RolesApi.ListPermissions(c.Accounts[0].V2Context)
+	resp, r, err := apiClient.RolesApi.ListPermissions(c.MultiPlexedAccount.V2Context)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)

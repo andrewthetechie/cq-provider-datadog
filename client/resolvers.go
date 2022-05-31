@@ -1,19 +1,12 @@
 package client
 
 import (
-	"crypto/sha1"
-	"encoding/base64"
-	"fmt"
+	"context"
+
+	"github.com/cloudquery/cq-provider-sdk/provider/schema"
 )
 
-func CreateMetaID(accountName string, id int64) string {
-	hasher := sha1.New()
-	hasher.Write([]byte(fmt.Sprintf("%s-%d", accountName, id)))
-	return base64.URLEncoding.EncodeToString(hasher.Sum(nil))
-}
-
-func CreateMetaIDStr(accountName string, id string) string {
-	hasher := sha1.New()
-	hasher.Write([]byte(fmt.Sprintf("%s-%s", accountName, id)))
-	return base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+func ResolveAccountName(_ context.Context, meta schema.ClientMeta, r *schema.Resource, col schema.Column) error {
+	client := meta.(*Client)
+	return r.Set(col.Name, client.MultiPlexedAccount.Name)
 }

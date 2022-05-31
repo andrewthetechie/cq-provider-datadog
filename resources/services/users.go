@@ -14,9 +14,16 @@ func Users() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_users",
 		Description: "User User object returned by the API.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchUsers,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "attributes_created_at",
 				Description: "Creation time of the user.",
@@ -144,11 +151,11 @@ func fetchUsers(ctx context.Context, meta schema.ClientMeta, parent *schema.Reso
 	c := meta.(*client.Client)
 	logger := c.Logger()
 	// TODO: multiplexing
-	thisConfig := c.Accounts[0].V2Config
+	thisConfig := c.MultiPlexedAccount.V2Config
 	thisConfig.SetUnstableOperationEnabled("ListIncidents", true)
 	apiClient := datadog.NewAPIClient(&thisConfig)
 
-	resp, r, err := apiClient.UsersApi.ListUsers(c.Accounts[0].V2Context)
+	resp, r, err := apiClient.UsersApi.ListUsers(c.MultiPlexedAccount.V2Context)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)

@@ -14,9 +14,16 @@ func Dashboards() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_dashboards",
 		Description: "Dashboard A dashboard is Datadog’s tool for visually tracking, analyzing, and displaying key performance metrics, which enable you to monitor the health of your infrastructure.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchDashboards,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "author_handle",
 				Description: "Identifier of the dashboard author.",
@@ -87,10 +94,10 @@ func Dashboards() *schema.Table {
 func fetchDashboards(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	c := meta.(*client.Client)
 	logger := c.Logger()
-	logger.Debug("in fetchHosts")
+	logger.Debug("in fetchDashboards")
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V1Config)
-	resp, r, err := apiClient.DashboardsApi.ListDashboards(c.Accounts[0].V1Context)
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V1Config)
+	resp, r, err := apiClient.DashboardsApi.ListDashboards(c.MultiPlexedAccount.V1Context)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)

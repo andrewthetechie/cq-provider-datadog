@@ -14,7 +14,10 @@ import (
 type Client struct {
 	logger hclog.Logger
 
-	Accounts []DDAccount
+	Accounts       []DDAccount
+	AccountConfigs []Account
+	// this is set by the table client multiplexer
+	MultiPlexedAccount DDAccount
 }
 
 func (c *Client) Logger() hclog.Logger {
@@ -27,6 +30,41 @@ type DDAccount struct {
 	V1Config  datadogv1.Configuration
 	V2Config  datadogv2.Configuration
 	Name      string
+}
+
+func (c Client) withAccount(account Account) *Client {
+	return &Client{
+		logger:   c.logger.With("id", account.Name),
+		Accounts: c.Accounts,
+		MultiPlexedAccount: DDAccount{
+			Name: account.Name,
+			V1Context: context.WithValue(
+				context.Background(),
+				datadogv1.ContextAPIKeys,
+				map[string]datadogv1.APIKey{
+					"apiKeyAuth": {
+						Key: account.APIKey,
+					},
+					"appKeyAuth": {
+						Key: account.AppKey,
+					},
+				},
+			),
+			V2Context: context.WithValue(
+				context.Background(),
+				datadogv2.ContextAPIKeys,
+				map[string]datadogv2.APIKey{
+					"apiKeyAuth": {
+						Key: account.APIKey,
+					},
+					"appKeyAuth": {
+						Key: account.AppKey,
+					},
+				},
+			),
+			V1Config: *datadogv1.NewConfiguration(),
+			V2Config: *datadogv2.NewConfiguration(),
+		}}
 }
 
 func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, diag.Diagnostics) {
@@ -74,8 +112,9 @@ func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, diag
 	// TODO: Figure out how to initialize all the datadog clients and pass them in here
 	// For now, going to do that in the resources. Still not sure how multiplexers work
 	client := Client{
-		logger:   logger,
-		Accounts: ddAccounts,
+		logger:         logger,
+		Accounts:       ddAccounts,
+		AccountConfigs: ddConfig.Accounts,
 	}
 
 	// Return the initialized client and it will be passed to your resources
