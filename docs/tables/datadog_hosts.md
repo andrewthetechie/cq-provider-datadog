@@ -4,6 +4,7 @@ Host Object representing a host.
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |aliases|text[]|Host aliases collected by Datadog.|
 |apps|text[]|The Datadog integrations reporting metrics for the host.|
 |aws_name|text|AWS name of your host.|

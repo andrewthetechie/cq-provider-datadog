@@ -14,9 +14,16 @@ func Monitors() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_monitors",
 		Description: "Monitor Object describing a monitor.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchMonitors,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "created",
 				Description: "Timestamp of the monitor creation.",
@@ -227,8 +234,8 @@ func fetchMonitors(ctx context.Context, meta schema.ClientMeta, parent *schema.R
 	logger := c.Logger()
 	logger.Debug("in fetchDatadogMonitors")
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V1Config)
-	resp, r, err := apiClient.MonitorsApi.ListMonitors(c.Accounts[0].V1Context)
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V1Config)
+	resp, r, err := apiClient.MonitorsApi.ListMonitors(c.MultiPlexedAccount.V1Context)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)

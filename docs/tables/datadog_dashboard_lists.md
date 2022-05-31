@@ -4,6 +4,7 @@ DashboardList Your Datadog Dashboards.
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |author_email|text|Email of the creator.|
 |author_handle|text|Handle of the creator.|
 |author_additional_properties|jsonb||

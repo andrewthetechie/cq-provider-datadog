@@ -4,6 +4,7 @@ IncidentResponseData Incident data from a response.
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |attributes_created|timestamp without time zone|Timestamp when the incident was created.|
 |attributes_customer_impact_duration|bigint|Length of the incident's customer impact in seconds. Equals the difference between `customer_impact_start` and `customer_impact_end`.|
 |attributes_customer_impacted|boolean|A flag indicating whether the incident caused customer impact.|

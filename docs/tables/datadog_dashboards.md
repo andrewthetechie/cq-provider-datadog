@@ -4,6 +4,7 @@ Dashboard A dashboard is Datadog’s tool for visually tracking, analyzing, and 
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |author_handle|text|Identifier of the dashboard author.|
 |created_at|timestamp without time zone|Creation date of the dashboard.|
 |id|text|ID of the dashboard.|

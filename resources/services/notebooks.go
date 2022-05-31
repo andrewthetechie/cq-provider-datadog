@@ -15,9 +15,16 @@ func Notebooks() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_notebooks",
 		Description: "NotebooksResponseData The data for a notebook in get all response.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchNotebooks,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "attributes_author_created_at",
 				Description: "Creation time of the user.",
@@ -172,10 +179,10 @@ func fetchNotebooks(ctx context.Context, meta schema.ClientMeta, parent *schema.
 	logger := c.Logger()
 	logger.Debug("in fetchNotebooks")
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V1Config)
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V1Config)
 	var step int64 = 250
 	params := datadog.NewListNotebooksOptionalParameters().WithCount(step)
-	resp, r, err := apiClient.NotebooksApi.ListNotebooks(c.Accounts[0].V1Context, *params)
+	resp, r, err := apiClient.NotebooksApi.ListNotebooks(c.MultiPlexedAccount.V1Context, *params)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)
@@ -187,7 +194,7 @@ func fetchNotebooks(ctx context.Context, meta schema.ClientMeta, parent *schema.
 	for retrievedCount < totalCount {
 		logger.Debug("Looping notebook requests")
 		params := datadog.NewListNotebooksOptionalParameters().WithCount(step).WithStart(retrievedCount)
-		resp, r, err := apiClient.NotebooksApi.ListNotebooks(c.Accounts[0].V1Context, *params)
+		resp, r, err := apiClient.NotebooksApi.ListNotebooks(c.MultiPlexedAccount.V1Context, *params)
 		logger.Debug(r.Status)
 		if err != nil {
 			return diag.FromError(err, diag.ACCESS)

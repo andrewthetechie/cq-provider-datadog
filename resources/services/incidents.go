@@ -15,9 +15,16 @@ func Incidents() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_incidents",
 		Description: "IncidentResponseData Incident data from a response.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchIncidents,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "attributes_created",
 				Description: "Timestamp when the incident was created.",
@@ -203,13 +210,13 @@ func fetchIncidents(ctx context.Context, meta schema.ClientMeta, parent *schema.
 	logger := c.Logger()
 	logger.Debug("in fetchHosts")
 	// TODO: multiplexing
-	thisConfig := c.Accounts[0].V2Config
+	thisConfig := c.MultiPlexedAccount.V2Config
 	thisConfig.SetUnstableOperationEnabled("ListIncidents", true)
 	apiClient := datadog.NewAPIClient(&thisConfig)
 
 	var step int64 = 1000
 	params := datadog.NewListIncidentsOptionalParameters().WithPageSize(step)
-	resp, r, err := apiClient.IncidentsApi.ListIncidents(c.Accounts[0].V2Context, *params)
+	resp, r, err := apiClient.IncidentsApi.ListIncidents(c.MultiPlexedAccount.V2Context, *params)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)
@@ -219,7 +226,7 @@ func fetchIncidents(ctx context.Context, meta schema.ClientMeta, parent *schema.
 	for *resp.Meta.Pagination.NextOffset > *resp.Meta.Pagination.Size {
 		logger.Debug("Looping host requests")
 		params := datadog.NewListIncidentsOptionalParameters().WithPageSize(step).WithPageOffset(*resp.Meta.Pagination.NextOffset)
-		resp, r, err := apiClient.IncidentsApi.ListIncidents(c.Accounts[0].V2Context, *params)
+		resp, r, err := apiClient.IncidentsApi.ListIncidents(c.MultiPlexedAccount.V2Context, *params)
 		logger.Debug(r.Status)
 		logger.Debug(fmt.Sprintf("Offset: %d, Next Offset: %d Size: %d", *resp.Meta.Pagination.Offset, *resp.Meta.Pagination.NextOffset, *resp.Meta.Pagination.Size))
 		if err != nil {

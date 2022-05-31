@@ -4,6 +4,7 @@ Downtime Downtiming gives you greater control over monitor notifications by allo
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |active|boolean|If a scheduled downtime currently exists.|
 |active_child|jsonb||
 |creator_id|integer|User ID of the downtime creator.|

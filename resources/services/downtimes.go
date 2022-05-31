@@ -14,9 +14,16 @@ func Downtimes() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_downtimes",
 		Description: "Downtime Downtiming gives you greater control over monitor notifications by allowing you to globally exclude scopes from alerting. Downtime settings, which can be scheduled with start and end times, prevent all alerting related to specified Datadog tags.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchDowntimes,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			//Todo: Handle all the NullableInt64 columns
 			{
 				Name:        "active",
@@ -98,20 +105,14 @@ func Downtimes() *schema.Table {
 func fetchDowntimes(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	c := meta.(*client.Client)
 	logger := c.Logger()
-	logger.Debug("in fetchHosts")
+	logger.Debug("in fetchDowntimes")
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V1Config)
-	resp, r, err := apiClient.DowntimesApi.ListDowntimes(c.Accounts[0].V1Context, *datadog.NewListDowntimesOptionalParameters().WithCurrentOnly(true))
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V1Config)
+	resp, r, err := apiClient.DowntimesApi.ListDowntimes(c.MultiPlexedAccount.V1Context, *datadog.NewListDowntimesOptionalParameters().WithCurrentOnly(true))
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)
 	}
 	res <- resp
 	return nil
-}
-func ResolveDowntimeMetaID(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
-	// TODO: Figure out multiplexing, for now, we're just getting one account working
-	thisClient := meta.(*client.Client)
-	item := resource.Item.(datadog.Downtime)
-	return diag.WrapError(resource.Set(c.Name, client.CreateMetaID(thisClient.Accounts[0].Name, *item.Id)))
 }

@@ -14,9 +14,16 @@ func DashboardLists() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_dashboard_lists",
 		Description: "DashboardList Your Datadog Dashboards.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchDashboardLists,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "author_email",
 				Description: "Email of the creator.",
@@ -86,8 +93,8 @@ func fetchDashboardLists(ctx context.Context, meta schema.ClientMeta, parent *sc
 	logger := c.Logger()
 	logger.Debug("in fetchHosts")
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V1Config)
-	resp, _, err := apiClient.DashboardListsApi.ListDashboardLists(c.Accounts[0].V1Context)
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V1Config)
+	resp, _, err := apiClient.DashboardListsApi.ListDashboardLists(c.MultiPlexedAccount.V1Context)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)
 	}

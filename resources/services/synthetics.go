@@ -14,9 +14,16 @@ func Synthetics() *schema.Table {
 	return &schema.Table{
 		Name:        "datadog_synthetics",
 		Description: "SyntheticsTestDetails Object containing details about your Synthetic test.",
+		Multiplex:   client.AccountMultiplex,
 		Resolver:    fetchSynthetics,
 		Options:     schema.TableCreationOptions{PrimaryKeys: []string{"public_id"}},
 		Columns: []schema.Column{
+			{
+				Name:        "account_name",
+				Description: "The name of this datadog account from your config.",
+				Type:        schema.TypeString,
+				Resolver:    client.ResolveAccountName,
+			},
 			{
 				Name:        "config",
 				Description: "Configuration object for a Synthetic test.",
@@ -105,8 +112,8 @@ func fetchSynthetics(ctx context.Context, meta schema.ClientMeta, parent *schema
 	c := meta.(*client.Client)
 	logger := c.Logger()
 	// TODO: multiplexing
-	apiClient := datadog.NewAPIClient(&c.Accounts[0].V1Config)
-	resp, r, err := apiClient.SyntheticsApi.ListTests(c.Accounts[0].V1Context)
+	apiClient := datadog.NewAPIClient(&c.MultiPlexedAccount.V1Config)
+	resp, r, err := apiClient.SyntheticsApi.ListTests(c.MultiPlexedAccount.V1Context)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)

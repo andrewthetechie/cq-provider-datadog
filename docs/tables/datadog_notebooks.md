@@ -4,6 +4,7 @@ NotebooksResponseData The data for a notebook in get all response.
 ## Columns
 | Name        | Type           | Description  |
 | ------------- | ------------- | -----  |
+|account_name|text|The name of this datadog account from your config.|
 |attributes_author_created_at|timestamp without time zone|Creation time of the user.|
 |attributes_author_disabled|boolean|Whether the user is disabled.|
 |attributes_author_email|text|Email of the user.|
