@@ -76,3 +76,5 @@ This is a very early provider and has some rough edges. Table layout should be e
 Most resources are just cq-gen's best approximation of a good structure for the object and have not been optimized.
 
 
+# Developer Guide
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for info on how to contribute to cq-provider-datadog

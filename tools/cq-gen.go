@@ -3,5 +3,5 @@
 package tools
 
 import (
-    _ "github.com/cloudquery/cq-gen"
+	_ "github.com/cloudquery/cq-gen"
 )
