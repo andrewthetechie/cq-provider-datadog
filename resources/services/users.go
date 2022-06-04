@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 
 	datadog "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/andrewthetechie/cq-provider-datadog/client"
@@ -152,14 +153,49 @@ func fetchUsers(ctx context.Context, meta schema.ClientMeta, parent *schema.Reso
 	logger := c.Logger()
 	// TODO: multiplexing
 	thisConfig := c.MultiPlexedAccount.V2Config
-	thisConfig.SetUnstableOperationEnabled("ListIncidents", true)
+
 	apiClient := datadog.NewAPIClient(&thisConfig)
 
-	resp, r, err := apiClient.UsersApi.ListUsers(c.MultiPlexedAccount.V2Context)
+	var page int64 = 1
+	// it seems like pagination on the users api is totally broken.
+	// It also seems its not super reliable. I get different counts for "TotalCount" on the meta depending on when
+	// I call the API and that count differs from what I get in the users UI.
+
+	//What I believe is happening is if you use a page size of greater than 1, if the count that would be returned for
+	// that page is less than page size, some weird truncation happens. For example, using page size of 10, the last page
+	// that would have 3 items on it for my org, is empty instead
+
+	//After multiple experiments, I found the only way to get the API to actually list ALL users is to go page size of 1
+	// and step through them one at a time. This makes retrieving users very slow
+	params := datadog.NewListUsersOptionalParameters().WithPageNumber(page).WithPageSize(1)
+	resp, r, err := apiClient.UsersApi.ListUsers(c.MultiPlexedAccount.V2Context, *params)
 	logger.Debug(r.Status)
 	if err != nil {
 		return diag.FromError(err, diag.ACCESS)
 	}
+	retrievedUserCount := int64(len(resp.Data))
 	res <- resp.Data
+	var totalCount int64 = *resp.Meta.Page.TotalCount
+	logger.Debug(fmt.Sprintf("TotalCount: %d", totalCount))
+	logger.Debug(fmt.Sprintf("Length of Data %d", retrievedUserCount))
+	// this pagination is awful, but the DD api is weird here. See above notes
+	for retrievedUserCount < totalCount {
+		page += 1
+		logger.Debug(fmt.Sprintf("Looping user requests. Requesting page %d. Total User Count: %d, Total Retrieved: %d", page, totalCount, retrievedUserCount))
+		params := datadog.NewListUsersOptionalParameters().WithPageNumber(page).WithPageSize(1)
+		resp, r, err := apiClient.UsersApi.ListUsers(c.MultiPlexedAccount.V2Context, *params)
+		thisUserCount := int64(len(resp.Data))
+		retrievedUserCount += thisUserCount
+		logger.Debug(fmt.Sprintf("Length of Data %d", thisUserCount))
+		logger.Debug(fmt.Sprintf("Total users retrieved: %d", retrievedUserCount))
+		logger.Debug(r.Status)
+		if err != nil {
+			return diag.FromError(err, diag.ACCESS)
+		}
+		res <- resp.Data
+		if thisUserCount == 0 {
+			break
+		}
+	}
 	return nil
 }
