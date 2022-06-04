@@ -1,10 +1,11 @@
 <p align="center">
 <a href="https://cloudquery.io">
-<img alt="cloudquery logo" width=75% src="https://github.com/cloudquery/cloudquery/raw/main/docs/images/logo.png" />
+<img alt="cloudquery logo" width=33% src="https://github.com/cloudquery/cloudquery/raw/main/docs/images/logo.png" />
+<img alt="cloudquery logo" width=33% src="https://imgix.datadoghq.com/img/about/presskit/logo-h/dd_horizontal_white.png?auto=format&fit=max&w=847&dpr=2" />
 </a>
 </p>
 
-CloudQuery Datadog Provider 
+# CloudQuery Datadog Provider 
 ![Go Version](https://img.shields.io/github/go-mod/go-version/andrewthetechie/cq-provider-datadog?style=flat-square) ![BuildStatus](https://img.shields.io/github/workflow/status/andrewthetechie/cq-provider-datadog/test_unit?style=flat-square) ![License](https://img.shields.io/github/license/andrewthetechie/cq-provider-datadog?style=flat-square) ![Issures](https://img.shields.io/github/issues/andrewthetechie/cq-provider-datadog?style=flat-square) ![Last Commit](https://img.shields.io/github/last-commit/andrewthetechie/cq-provider-datadog?style=flat-square)
 ==================================
 
