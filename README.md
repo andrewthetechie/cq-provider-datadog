@@ -4,7 +4,8 @@
 </a>
 </p>
 
-CloudQuery Datadog Provider ![BuildStatus](https://img.shields.io/github/workflow/status/andrewthetechie/cq-provider-datadog/test?style=flat-square) ![License](https://img.shields.io/github/license/andrewthetechie/cq-provider-datadog?style=flat-square)
+CloudQuery Datadog Provider 
+![Go Version](https://img.shields.io/github/go-mod/go-version/andrewthetechie/cq-provider-datadog?style=flat-square) ![BuildStatus](https://img.shields.io/github/workflow/status/andrewthetechie/cq-provider-datadog/test_unit?style=flat-square) ![License](https://img.shields.io/github/license/andrewthetechie/cq-provider-datadog?style=flat-square) ![Issures](https://img.shields.io/github/issues/andrewthetechie/cq-provider-datadog?style=flat-square) ![Last Commit](https://img.shields.io/github/last-commit/andrewthetechie/cq-provider-datadog?style=flat-square)
 ==================================
 
 This [CloudQuery](https://github.com/cloudquery/cloudquery)
