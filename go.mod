@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/DataDog/datadog-api-client-go v1.14.0
 	github.com/cloudquery/cq-gen v0.0.5
-	github.com/cloudquery/cq-provider-sdk v0.10.11
+	github.com/cloudquery/cq-provider-sdk v0.11.0
 	github.com/hashicorp/go-hclog v1.2.0
 )
 
