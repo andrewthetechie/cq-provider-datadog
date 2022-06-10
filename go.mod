@@ -6,7 +6,7 @@ require (
 	github.com/DataDog/datadog-api-client-go v1.14.0
 	github.com/cloudquery/cq-gen v0.0.5
 	github.com/cloudquery/cq-provider-sdk v0.11.0
-	github.com/hashicorp/go-hclog v1.2.0
+	github.com/hashicorp/go-hclog v1.2.1
 )
 
 require (
@@ -61,7 +61,7 @@ require (
 	github.com/spf13/afero v1.8.1 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect
-	github.com/stretchr/testify v1.7.0 // indirect
+	github.com/stretchr/testify v1.7.2 // indirect
 	github.com/thoas/go-funk v0.9.1 // indirect
 	github.com/vektah/gqlparser/v2 v2.2.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.4 // indirect
@@ -82,5 +82,5 @@ require (
 	google.golang.org/grpc v1.42.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
