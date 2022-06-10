@@ -1,53 +1,38 @@
 ---
-name: 🐛 Bug Report
-about: If something isn't working as expected 🤔.
-labels: bug
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
-<!--
-    If the feature request is related to  CloudQuery Core generic functionality
-        * https://github.com/cloudquery/cloudquery
- -->
+**Describe the bug**
+A clear and concise description of what the bug is.
 
-### Describe the Bug
-<!-- try to elaborate as much as you can on the bug and the behaviour -->
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
+**Expected behavior**
+A clear and concise description of what you expected to happen.
 
-### Expected Behavior
-<!--
-What should have happened?
--->
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
+**Desktop (please complete the following information):**
+ - OS: [e.g. iOS]
+ - Browser [e.g. chrome, safari]
+ - Version [e.g. 22]
 
-### CloudQuery Version
-<!--
-Output of `cloudquery version`
--->
+**Smartphone (please complete the following information):**
+ - Device: [e.g. iPhone6]
+ - OS: [e.g. iOS8.1]
+ - Browser [e.g. stock browser, safari]
+ - Version [e.g. 22]
 
-### Debug Output
-<!--
-Full debug output can be obtained by running `cloudquery --enable-console-log --debug`
-
-Debug logs may contain sensitive information. Please review and censor it before posting publicly.
--->
-
-### Steps to Reproduce
-<!--
-Please list all steps required to reproduce the issue, for example:
-```
-cloudquery init
-cloudquery fetch
-```
-
-Also please share any other necessary configuration files like config.hcl
--->
-
-### Additional Context
-<!--
-Add any other context or examples about the feature request here.
--->
-
-### References
-<!--
-Link any other relevant PRs or Issues
--->
+**Additional context**
+Add any other context about the problem here.
