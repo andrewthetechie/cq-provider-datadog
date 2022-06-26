@@ -1,7 +1,8 @@
 package provider
 
 import (
-	sdkprovider "github.com/cloudquery/cq-provider-sdk/provider"
+	"github.com/cloudquery/cq-provider-sdk/cqproto"
+	"github.com/cloudquery/cq-provider-sdk/provider"
 	sdkschema "github.com/cloudquery/cq-provider-sdk/provider/schema"
 
 	"github.com/andrewthetechie/cq-provider-datadog/client"
@@ -12,9 +13,9 @@ var (
 	Version = "Development"
 )
 
-func Provider() *sdkprovider.Provider {
+func Provider() *provider.Provider {
 
-	return &sdkprovider.Provider{
+	return &provider.Provider{
 		Version:   Version,
 		Name:      "datadog",
 		Configure: client.Configure,
@@ -31,8 +32,8 @@ func Provider() *sdkprovider.Provider {
 			"synthetics":      services.Synthetics(),
 			"users":           services.Users(),
 		},
-		Config: func() sdkprovider.Config {
-			return &client.Config{}
+		Config: func(f cqproto.ConfigFormat) provider.Config {
+			return client.NewConfig(f)
 		},
 	}
 

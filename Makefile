@@ -64,3 +64,11 @@ test-unit: ## Run unit tests
 .PHONY: test-integration
 test-integration: ## Run integration tests
 	@if [[ "$(tableName)" == "" ]]; then go test -run=TestIntegration -timeout 3m -tags=integration ./...; else go test -run="TestIntegration/$(tableName)" -timeout 3m -tags=integration ./...; fi
+
+.PHONY: tidy
+tidy: ## Run go mod tidy
+	go mod tidy -compat=1.17
+
+.PhONY: fmt
+fmt: ## Run go fmt
+	go fmt ./...

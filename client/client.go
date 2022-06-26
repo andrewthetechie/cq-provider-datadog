@@ -6,6 +6,7 @@ import (
 
 	datadogv1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogv2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/cloudquery/cq-provider-sdk/cqproto"
 	"github.com/cloudquery/cq-provider-sdk/provider/diag"
 	"github.com/cloudquery/cq-provider-sdk/provider/schema"
 	"github.com/hashicorp/go-hclog"
@@ -65,6 +66,12 @@ func (c Client) withAccount(account Account) *Client {
 			V1Config: *datadogv1.NewConfiguration(),
 			V2Config: *datadogv2.NewConfiguration(),
 		}}
+}
+
+func NewConfig(f cqproto.ConfigFormat) *Config {
+	return &Config{
+		requestedFormat: f,
+	}
 }
 
 func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, diag.Diagnostics) {
