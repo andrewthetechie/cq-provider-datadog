@@ -3,7 +3,7 @@ module github.com/andrewthetechie/cq-provider-datadog
 go 1.17
 
 require (
-	github.com/DataDog/datadog-api-client-go v1.14.0
+	github.com/DataDog/datadog-api-client-go v1.15.0
 	github.com/cloudquery/cq-gen v0.0.5
 	github.com/cloudquery/cq-provider-sdk v0.12.3
 	github.com/hashicorp/go-hclog v1.2.1
@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.0.0 // indirect
+	github.com/DataDog/zstd v1.5.0 // indirect
 	github.com/Masterminds/squirrel v1.5.3 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/agnivade/levenshtein v1.0.1 // indirect
