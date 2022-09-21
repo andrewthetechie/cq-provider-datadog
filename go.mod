@@ -6,7 +6,7 @@ require (
 	github.com/DataDog/datadog-api-client-go v1.14.0
 	github.com/cloudquery/cq-gen v0.0.5
 	github.com/cloudquery/cq-provider-sdk v0.12.3
-	github.com/hashicorp/go-hclog v1.2.1
+	github.com/hashicorp/go-hclog v1.3.1
 )
 
 require (
