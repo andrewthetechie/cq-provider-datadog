@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout
         if: startsWith(github.head_ref, 'release')
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
         with:
           fetch-depth: 0
       - name: Set up Go
